@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanban Simples - Gerenciador de Tarefas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Barra de Navegação Superior -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="logo-icon">📋</span>
+      <span class="brand-name">Sistema Kanban</span>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link active">Quadro Kanban</a>
+      <a href="dashboard.html" class="nav-link">📊 Dashboard</a>
+    </div>
+  </nav>
+
+  <!-- Cabeçalho Principal com Botões de Ação -->
+  <header class="header">
+    <div class="header-content">
+      <h1>Quadro de Atividades</h1>
+      <p>Gerencie tarefas, categorias e prazos com facilidade</p>
+    </div>
+    <div class="header-actions">
+      <!-- Botão para adicionar coluna customizada -->
+      <button id="btn-nova-coluna" class="btn btn-secondary">+ Nova Coluna</button>
+      <!-- Botão para adicionar nova tarefa -->
+      <button id="btn-nova-tarefa" class="btn btn-primary">+ Nova Tarefa</button>
+    </div>
+  </header>
+
+  <!-- Contêiner Dinâmico de Colunas do Kanban -->
+  <main class="kanban-container" id="kanban-board">
+    <!-- As colunas (fixas e customizadas) serão renderizadas via JavaScript -->
+  </main>
+
+  <!-- ============================================================
+       MODAL 1: CRIAR / EDITAR TAREFA
+       ============================================================ -->
+  <div id="modal-tarefa" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-titulo">Criar Nova Tarefa</h3>
+        <button type="button" class="btn-close" id="btn-fechar-modal">&times;</button>
+      </div>
+
+      <form id="form-tarefa">
+        <!-- ID Oculto para edição -->
+        <input type="hidden" id="tarefa-id">
+
+        <!-- Título -->
+        <div class="form-group">
+          <label for="tarefa-titulo">Título *</label>
+          <input type="text" id="tarefa-titulo" placeholder="Ex: Preparar apresentação da aula" required>
+        </div>
+
+        <!-- Categoria -->
+        <div class="form-group">
+          <label for="tarefa-categoria">Categoria *</label>
+          <select id="tarefa-categoria" required>
+            <option value="Trabalho">Trabalho</option>
+            <option value="Estudo">Estudo</option>
+            <option value="Pessoal">Pessoal</option>
+            <option value="Projetos">Projetos</option>
+            <option value="Geral">Geral</option>
+          </select>
+        </div>
+
+        <!-- Descrição -->
+        <div class="form-group">
+          <label for="tarefa-descricao">Descrição</label>
+          <textarea id="tarefa-descricao" rows="3" placeholder="Detalhes e observações..."></textarea>
+        </div>
+
+        <!-- Prazo -->
+        <div class="form-group">
+          <label for="tarefa-prazo">Prazo de Conclusão *</label>
+          <input type="date" id="tarefa-prazo" required>
+        </div>
+
+        <!-- Status / Coluna Inicial -->
+        <div class="form-group" id="grupo-status">
+          <label for="tarefa-status">Quadro / Coluna</label>
+          <select id="tarefa-status">
+            <!-- As opções de colunas serão preenchidas dinamicamente -->
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btn-cancelar-modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btn-salvar-tarefa">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 2: CRIAR NOVA COLUNA / QUADRO
+       ============================================================ -->
+  <div id="modal-coluna" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Criar Nova Coluna</h3>
+        <button type="button" class="btn-close" id="btn-fechar-modal-coluna">&times;</button>
+      </div>
+
+      <form id="form-coluna">
+        <div class="form-group">
+          <label for="coluna-titulo">Nome da Coluna *</label>
+          <input type="text" id="coluna-titulo" placeholder="Ex: Em Revisão, Impedimento..." required>
+        </div>
+
+        <div class="form-group">
+          <label for="coluna-cor">Cor do Cabeçalho</label>
+          <select id="coluna-cor">
+            <option value="#6366f1">Roxo / Índigo</option>
+            <option value="#06b6d4">Ciano</option>
+            <option value="#ec4899">Rosa</option>
+            <option value="#8b5cf6">Violeta</option>
+            <option value="#64748b">Cinza Ardósia</option>
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btn-cancelar-modal-coluna">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Adicionar Coluna</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 3: JUSTIFICATIVA DE TAREFA VENCIDA
+       ============================================================ -->
+  <div id="modal-justificativa" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="text-danger">⚠️ Atenção: Tarefa Vencida!</h3>
+      </div>
+      <p class="modal-info">
+        Esta tarefa ultrapassou a data limite. Para concluí-la, informe uma <strong>justificativa obrigatória</strong> de encerramento fora do prazo.
+      </p>
+
+      <form id="form-justificativa">
+        <div class="form-group">
+          <label for="justificativa-texto">Nota de Encerramento *</label>
+          <textarea id="justificativa-texto" rows="3" placeholder="Descreva o motivo do atraso e como a entrega foi finalizada..." required></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btn-cancelar-justificativa">Voltar</button>
+          <button type="submit" class="btn btn-danger">Confirmar Conclusão</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Script da Aplicação -->
+  <script src="script.js"></script>
+</body>
+</html>
