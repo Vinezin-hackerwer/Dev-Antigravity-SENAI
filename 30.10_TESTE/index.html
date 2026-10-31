@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jokenpô - Pedra, Papel e Tesoura</title>
+  <meta name="description" content="Jogo clássico de Jokenpô (Pedra, Papel e Tesoura) desenvolvido em HTML, CSS e JavaScript puros.">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-layout">
+    <header class="game-header">
+      <h1 class="game-title">Jokenpô</h1>
+      <p class="game-subtitle">Pedra, Papel e Tesoura &bull; Use o mouse ou as teclas <strong>1</strong>, <strong>2</strong> e <strong>3</strong></p>
+    </header>
+
+    <main class="game-main">
+      <!-- Seletor de Modo de Partida -->
+      <section class="section-card mode-section" aria-label="Configuração do modo de jogo">
+        <label for="mode-select" class="mode-label">Modo de jogo:</label>
+        <select id="mode-select" class="custom-select">
+          <option value="free">Partida Livre (Sem limite)</option>
+          <option value="bestOf3">Melhor de 3 (Primeiro com 2 vitórias)</option>
+          <option value="bestOf5">Melhor de 5 (Primeiro com 3 vitórias)</option>
+        </select>
+      </section>
+
+      <!-- Placar do Jogo -->
+      <section class="section-card scoreboard-section" aria-label="Placar atual">
+        <div class="score-card player-score-card">
+          <span class="score-label">Você</span>
+          <span id="player-score" class="score-value">0</span>
+        </div>
+        <div class="score-card draw-score-card">
+          <span class="score-label">Empates</span>
+          <span id="draw-score" class="score-value">0</span>
+        </div>
+        <div class="score-card computer-score-card">
+          <span class="score-label">Computador</span>
+          <span id="computer-score" class="score-value">0</span>
+        </div>
+      </section>
+
+      <!-- Arena do Duelo e Animação -->
+      <section class="section-card arena-section" aria-label="Área de disputa da rodada">
+        <div class="fighters-stage">
+          <div class="fighter-box">
+            <span class="fighter-name">Você</span>
+            <div id="player-hand" class="hand-display" aria-hidden="true">✊</div>
+            <span id="player-choice-text" class="choice-text">Aguardando...</span>
+          </div>
+
+          <div class="versus-badge" aria-hidden="true">VS</div>
+
+          <div class="fighter-box">
+            <span class="fighter-name">Computador</span>
+            <div id="computer-hand" class="hand-display computer-hand" aria-hidden="true">✊</div>
+            <span id="computer-choice-text" class="choice-text">Aguardando...</span>
+          </div>
+        </div>
+
+        <!-- Região Live para Anúncio Acessível de Resultados -->
+        <div id="game-message" class="game-message" aria-live="polite" role="status">
+          Escolha uma jogada para iniciar!
+        </div>
+
+        <!-- Alerta de Conclusão de Partida -->
+        <div id="match-banner" class="match-banner hidden" role="alert">
+          <p id="match-winner-text" class="match-winner-text"></p>
+          <button type="button" id="btn-play-again" class="btn btn-primary">Jogar novamente</button>
+        </div>
+      </section>
+
+      <!-- Controles de Escolha do Jogador -->
+      <section class="section-card choices-section" aria-label="Opções de jogada">
+        <h2 class="sr-only">Faça sua escolha</h2>
+        <div id="choices-container" class="choices-container">
+          <button type="button" class="btn-choice" data-choice="pedra" aria-label="Escolher Pedra (atalho: tecla 1)">
+            <span class="choice-emoji" aria-hidden="true">✊</span>
+            <span class="choice-name">Pedra <kbd>(1)</kbd></span>
+          </button>
+          <button type="button" class="btn-choice" data-choice="papel" aria-label="Escolher Papel (atalho: tecla 2)">
+            <span class="choice-emoji" aria-hidden="true">✋</span>
+            <span class="choice-name">Papel <kbd>(2)</kbd></span>
+          </button>
+          <button type="button" class="btn-choice" data-choice="tesoura" aria-label="Escolher Tesoura (atalho: tecla 3)">
+            <span class="choice-emoji" aria-hidden="true">✌️</span>
+            <span class="choice-name">Tesoura <kbd>(3)</kbd></span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Ações Gerais -->
+      <section class="actions-section" aria-label="Ações da partida">
+        <button type="button" id="btn-reset-score" class="btn btn-danger">Zerar placar</button>
+      </section>
+
+      <!-- Histórico das Últimas 5 Rodadas -->
+      <section class="section-card history-section" aria-label="Histórico recente de rodadas">
+        <h2 class="history-title">Últimas 5 Rodadas</h2>
+        <ul id="history-list" class="history-list">
+          <li class="history-empty">Nenhuma rodada disputada ainda.</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
+
